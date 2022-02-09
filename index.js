@@ -14,6 +14,10 @@ app.get('/exchange', (req, res) => {
         resp.on('data', (chunk) => { data += chunk })
         resp.on('end', () => {
             try {
+                if ( resp.statusCode != 200) {
+                    res.status(200)
+                    res.send({ "error code": resp.statusCode, "error message": resp.statusMessage })
+                }
                 data = JSON.parse(data)
                 res.status(200)
                 res.send(data[0].rates.filter( o => (o.code == 'USD' || o.code == 'EUR' || o.code == 'GBP')))
