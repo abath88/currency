@@ -2,7 +2,13 @@ const express = require('express')
 const https = require('https')
 const app = express()
 
-app.get('/exchange',async  (req, res) => {
+app.get('/', (req, res) => {
+    let message = '<html><body><p>/exchange - show USD, EUR, GBP</p><p>/exchange/:from/:howmuch - exchange :howmuch to zł :from currency</p></body></html'
+    res.status(200)
+    res.send(message)
+})
+
+app.get('/exchange', (req, res) => {
     https.get('https://api.nbp.pl/api/exchangerates/tables/a/today/?format=json', resp => {
         let data = ''
         resp.on('data', (chunk) => { data += chunk })
@@ -14,9 +20,9 @@ app.get('/exchange',async  (req, res) => {
             } catch (error) {
                 res.status(500)
                 res.send(error.message)
-            };
-        });
-    });
+            }
+        })
+    })
 })
 
 app.get('/exchange/:from/:howmuch', (req, res) => {
@@ -36,9 +42,9 @@ app.get('/exchange/:from/:howmuch', (req, res) => {
             } catch (error) {
                 res.status(500)
                 res.send({"err": error.message})
-            };
-        });
-    });
+            }
+        })
+    })
 })
 
 app.listen(3000, () => {console.log("-- server listen at port 3000")})
